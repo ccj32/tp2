@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios y Tareas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .user-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .task {
+            margin-left: 20px;
+        }
+        .completed {
+            color: green;
+        }
+        .not-completed {
+            color: red;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Usuarios y Tareas</h1>
+    <div id="users"></div>
+
+    <script>
+        const URL_API_USUARIOS = 'https://jsonplaceholder.typicode.com/users';
+        const URL_API_TAREAS = 'https://jsonplaceholder.typicode.com/todos?userId=';
+
+        async function obtenerUsuarios() {
+            const respuesta = await fetch(URL_API_USUARIOS);
+            const usuarios = await respuesta.json();
+            return usuarios;
+        }
+
+        async function obtenerTareas(userId) {
+            const respuesta = await fetch(URL_API_TAREAS + userId);
+            const tareas = await respuesta.json();
+            return tareas;
+        }
+
+        async function mostrarUsuarios() {
+            const usuarios = await obtenerUsuarios();
+            const contenedorUsuarios = document.getElementById('users');
+
+            usuarios.forEach(usuario => {
+                const tarjetaUsuario = document.createElement('div');
+                tarjetaUsuario.className = 'user-card';
+
+                tarjetaUsuario.innerHTML = `
+                    <p><strong>ID:</strong> ${usuario.id}</p>
+                    <p><strong>Nombre:</strong> ${usuario.name}</p>
+                    <p><strong>Nombre de Usuario:</strong> ${usuario.username}</p>
+                    <p><strong>Email:</strong> ${usuario.email}</p>
+                    <p><strong>Sitio Web:</strong> <a href="http://${usuario.website}" target="_blank">${usuario.website}</a></p>
+                    <button onclick="mostrarTareas(${usuario.id})">Ver Tareas</button>
+                    <div id="tasks-${usuario.id}" class="tasks"></div>
+                `;
+
+                contenedorUsuarios.appendChild(tarjetaUsuario);
+            });
+        }
+
+        async function mostrarTareas(userId) {
+            const contenedorTareas = document.getElementById(`tasks-${userId}`);
+
+            if (contenedorTareas.innerHTML !== '') {
+                contenedorTareas.innerHTML = '';
+                return;
+            }
+
+            const tareas = await obtenerTareas(userId);
+
+            tareas.forEach(tarea => {
+                const elementoTarea = document.createElement('p');
+                elementoTarea.className = `task ${tarea.completed ? 'completed' : 'not-completed'}`;
+                elementoTarea.innerText = tarea.title;
+                contenedorTareas.appendChild(elementoTarea);
+            });
+        }
+
+        mostrarUsuarios();
+    </script>
+</body>
+</html>

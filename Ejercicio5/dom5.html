@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Área del Terreno</title>
+</head>
+<body>
+    <h1>Calculadora de Área del Terreno</h1>
+    <form id="areaForm">
+        <label for="A">Altura total (A) en metros:</label>
+        <input type="number" id="A" >
+        <br><br>
+        <label for="B">Base (B) en metros:</label>
+        <input type="number" id="B" >
+        <br><br>
+        <label for="C">Altura del rectángulo (C) en metros:</label>
+        <input type="number" id="C" >
+        <br><br>
+        <button type="button" onclick="calcularArea()">Calcular</button>
+    </form>
+
+    <script>
+        function calcularArea() {
+            let A = parseFloat(document.getElementById("A").value);
+            let B = parseFloat(document.getElementById("B").value);
+            let C = parseFloat(document.getElementById("C").value);
+
+            if (A > 0 && B > 0 && C > 0 && A > C) {
+                let areaRectangulo = B * C;
+                let areaTriangulo = 0.5 * B * (A - C);
+                let areaTotal = areaRectangulo + areaTriangulo;
+                alert("El área total del terreno es: " + areaTotal.toFixed(2) + " metros cuadrados");
+            } else {
+                alert("Por favor, ingresa valores válidos. A debe ser mayor que C.");
+            }
+        }
+    </script>
+</body>
+</html>
